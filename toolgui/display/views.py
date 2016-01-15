@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from display.models import packet_tf, trace_file
 from display.forms import TraceFileForm
 from toolinterface.settings import MEDIA_ROOT
+import os
 
 def test(request):
     return render(request, "test.html", {})
@@ -34,9 +35,10 @@ def upload_trace(request):
 
 def display_packets(request):
     if request.GET:
-        trace_file = request.GET.get('tf')
-    
-    trace_file = MEDIA_ROOT + '/' + trace_file    
+        selected_tf = request.GET.get('tf')
+    else:
+        return HttpResponseRedirect("/home/")
+    trace_file = MEDIA_ROOT + '/' + selected_tf    
     print trace_file
     pkts = rdpcap(trace_file)
 
@@ -113,25 +115,30 @@ def delete_packet(request):
     return HttpResponseRedirect('/display/')
 
 def save(request):
-    num_packets = packet_tf.objects.all().count()
-    SAVE_PATH = MEDIA_ROOT + '/trace_files/save.pcap'
-
-    
-    for i in range(0,num_packets):
-        saved_pkt = packet_tf.objects.filter(packet_num=i).values().last()
+    if request.method == 'POST':
+        file_name = request.POST.get('file_name')
+        num_packets = packet_tf.objects.all().count()
         
-        IP_new_pkt = IP()
-        IP_new_pkt.src = saved_pkt['src_address']
-        IP_new_pkt.dst = saved_pkt['dst_address']
+        SAVE_PATH = MEDIA_ROOT + '/trace_files/' + file_name + '.pcap'
         
-        TCP_new_pkt = TCP()
-        TCP_new_pkt.sport = saved_pkt['sport']
-        TCP_new_pkt.dport = saved_pkt['dport']
-         
-        complete_pkt = (IP_new_pkt/TCP_new_pkt)
-        if i==0:
-            wrpcap(SAVE_PATH, complete_pkt)
-            pkts = rdpcap(SAVE_PATH)
-        pkts.append(complete_pkt)
-    wrpcap(SAVE_PATH, pkts)
-    return HttpResponse("Trace Saved!")
+        if(os.path.exists(SAVE_PATH)):
+            os.remove(SAVE_PATH)
+                
+        for i in range(0,num_packets):
+            saved_pkt = packet_tf.objects.filter(packet_num=i).values().last()
+            
+            IP_new_pkt = IP()
+            IP_new_pkt.src = saved_pkt['src_address']
+            IP_new_pkt.dst = saved_pkt['dst_address']
+            
+            TCP_new_pkt = TCP()
+            TCP_new_pkt.sport = saved_pkt['sport']
+            TCP_new_pkt.dport = saved_pkt['dport']
+             
+            complete_pkt = (IP_new_pkt/TCP_new_pkt)
+            if i==0:
+                wrpcap(SAVE_PATH, complete_pkt)
+                pkts = rdpcap(SAVE_PATH)
+            pkts.append(complete_pkt)
+        wrpcap(SAVE_PATH, pkts)
+    return render(request, "save_pcap.html", {})
