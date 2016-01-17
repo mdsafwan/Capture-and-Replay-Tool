@@ -127,15 +127,39 @@ def save(request):
         for i in range(0,num_packets):
             saved_pkt = packet_tf.objects.filter(packet_num=i).values().last()
             
+            Ether_new_pkt = Ether()
+            Ether_new_pkt.src = saved_pkt['src_macaddr']
+            Ether_new_pkt.dst = saved_pkt['dst_macaddr']
+            Ether_new_pkt.type = saved_pkt['type']
+            
             IP_new_pkt = IP()
             IP_new_pkt.src = saved_pkt['src_address']
             IP_new_pkt.dst = saved_pkt['dst_address']
-            
+#             IP_new_pkt.version = saved_pkt['version']
+#             IP_new_pkt.ihl = saved_pkt['ihl']
+#             IP_new_pkt.tos = saved_pkt['tos']
+#             IP_new_pkt.id = saved_pkt['id_IP']
+#             IP_new_pkt.flags = saved_pkt['flags']
+#             IP_new_pkt.frag = saved_pkt['frag']
+#             IP_new_pkt.ttl = saved_pkt['ttl']
+#             IP_new_pkt.proto = saved_pkt['proto']
+#             IP_new_pkt.chksum = saved_pkt['chksum']
+#             
             TCP_new_pkt = TCP()
             TCP_new_pkt.sport = saved_pkt['sport']
             TCP_new_pkt.dport = saved_pkt['dport']
+#             TCP_new_pkt.seq = saved_pkt['seq']
+#             TCP_new_pkt.ack = saved_pkt['ack']
+#             TCP_new_pkt.dataofs = saved_pkt['dataofs']
+#             TCP_new_pkt.reserved = saved_pkt['reserved']
+#             TCP_new_pkt.flags = saved_pkt['flags_TCP']
+#             TCP_new_pkt.window = saved_pkt['window']
+#             TCP_new_pkt.chksum = saved_pkt['chksum_TCP']
+#             TCP_new_pkt.urgptr = saved_pkt['urgptr']
+
+            
              
-            complete_pkt = (IP_new_pkt/TCP_new_pkt)
+            complete_pkt = (Ether_new_pkt/IP_new_pkt/TCP_new_pkt)
             if i==0:
                 wrpcap(SAVE_PATH, complete_pkt)
                 pkts = rdpcap(SAVE_PATH)
