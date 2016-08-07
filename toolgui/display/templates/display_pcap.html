@@ -58,6 +58,9 @@
                     <li>
                         <a href="/upload_trace/"><i class="fa fa-fw fa-upload"></i> Upload Trace File</a>
                     </li>
+                    <li>
+                        <a href="/delete_trace/"><i class="fa fa-fw fa-trash"></i> Delete a Trace File</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -77,6 +80,8 @@
                         
                         <ol class="breadcrumb">
                         	<a href="/save/"><button type="button" class="btn btn-lg btn-primary">Save Trace</button></a>
+                        	<a href="/replay/?trace_file={{trace_file}}"><button type="button" class="btn btn-lg btn-primary">Replay</button></a>
+                     	
                         </ol>
 
 						
@@ -98,13 +103,13 @@
                                     
                                     <tr>
                                     	<td>{{forloop.counter}}</td>
-                                        <td>{{p.src_address}}</td>
-	                                    <td>{{p.dst_address}}</td>
-	                                    {% if p.proto == 6 %}
+                                        <td>{{p.IP_src_address}}</td>
+	                                    <td>{{p.IP_dst_address}}</td>
+	                                    {% if p.IP_proto == 6 %}
 	                                    <td>TCP</td>
 	                                    {% endif %}
-	                                    <td>{{p.length}}</td>
-	                                    <td><a href="/edit_packet/?id={{p.id}}" data-toggle="tooltip" data-placement="top" title="Edit Packet"><i class="fa fa-edit"></i></a> <a href="/delete_packet/?id={{p.id}}" data-toggle="tooltip" data-placement="top" title="Delete Packet"><i class="fa fa-trash"></i></a> </td>
+	                                    <td>{{p.IP_length}}</td>
+	                                    <td><a href="/edit_packet/?id={{p.id}}&pkt_num={{forloop.counter}}&tf={{trace_file}}" data-toggle="tooltip" data-placement="top" title="Edit Packet"><i class="fa fa-edit"></i></a> <a href="/delete_packet/?id={{p.id}}&pkt_num={{forloop.counter}}&tf={{trace_file}}" data-toggle="tooltip" data-placement="top" title="Delete Packet"><i class="fa fa-trash"></i></a></td>
 	                              	</tr>
                                     {%endfor%}
                                 </tbody>

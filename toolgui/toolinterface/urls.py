@@ -16,15 +16,18 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from display.views import homepage, display_packets, edit_packet, save,\
-    delete_packet, upload_trace, test
+    delete_packet, upload_trace, test, replay, sendpackets, delete_trace
 
 urlpatterns = [
     url(r'test/', test),
     url(r'home/', homepage),
     url(r'upload_trace', upload_trace),
+    url(r'delete_trace', delete_trace),
     url(r'display/', display_packets),
     url(r'edit_packet/', edit_packet),
     url(r'save/', save),
     url(r'delete_packet/', delete_packet),
+    url(r'replay/', replay),
+    url(r'sendpackets/', sendpackets),
     url(r'^admin/', admin.site.urls),
 ]

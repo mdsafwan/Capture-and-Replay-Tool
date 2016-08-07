@@ -56,6 +56,9 @@
                     <li>
                         <a href="/upload_trace/"><i class="fa fa-fw fa-upload"></i> Upload Trace File</a>
                     </li>
+                    <li>
+                        <a href="/delete_trace/"><i class="fa fa-fw fa-trash"></i> Delete a Trace File</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -79,6 +82,7 @@
                             </li>
                         </ol>
                         
+                     	
                      	{% if trace_files %}
 					        <ul>
 					        {% for tfile in trace_files %}
@@ -88,6 +92,8 @@
 					    {% else %}
 					        <p>No tracefiles.</p>
 					    {% endif %}
+					    
+					    
 					    
 					    <form action="/upload_trace/" method="post" enctype="multipart/form-data">
 				            {% csrf_token %}

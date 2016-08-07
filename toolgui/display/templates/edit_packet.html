@@ -55,6 +55,9 @@
                     <li>
                         <a href="/upload_trace/"><i class="fa fa-fw fa-upload"></i> Upload Trace File</a>
                     </li>
+                    <li>
+                        <a href="/delete_trace/"><i class="fa fa-fw fa-trash"></i> Delete a Trace File</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -73,7 +76,7 @@
                             <small>{{name}}</small>
                         </h1>
 
-                        <form role="form" method="post" action="/edit_packet/?id={{pkt_id}}">{% csrf_token %}
+                        <form role="form" method="post" action="/edit_packet/?id={{pkt_id}}&pkt_num={{pkt_num}}&tf={{trace_file}}">{% csrf_token %}
 							<ol class="breadcrumb">
                             <li>
 								<h5>Ethernet</h5>
@@ -83,17 +86,17 @@
                             
                             <div class="form-group">
                                 <label>Source MAC Address</label>
-                                <input name="src_macaddr" class="form-control" placeholder="{{pkt.src_macaddr}}" required>
+                                <input name="src_macaddr" class="form-control" placeholder="{{pkt.Ether_src_macaddr}}" >
                             </div>
                             
                             <div class="form-group">
                                 <label>Destination MAC Address</label>
-                                <input name="dst_macaddr" class="form-control" placeholder="{{pkt.dst_macaddr}}" required>
+                                <input name="dst_macaddr" class="form-control" placeholder="{{pkt.Ether_dst_macaddr}}" >
                             </div>
                             
                             <div class="form-group">
                                 <label>Type</label>
-                                <input name="type" class="form-control" placeholder="{{pkt.type}}" required>
+                                <input name="type" class="form-control" placeholder="{{pkt.Ether_type}}" >
                             </div>
 							
 							<ol class="breadcrumb">
@@ -105,22 +108,22 @@
                         	
                         	<div class="form-group">
                                 <label>Source IP Address</label>
-                                <input name="src_address" class="form-control" placeholder="{{pkt.src_address}}" required>
+                                <input name="src_address" class="form-control" placeholder="{{pkt.IP_src_address}}" >
                             </div>
                             
                             <div class="form-group">
                                 <label>Destination IP Address</label>
-                                <input name="dst_address" class="form-control" placeholder="{{pkt.dst_address}}" required>
+                                <input name="dst_address" class="form-control" placeholder="{{pkt.IP_dst_address}}" >
                             </div>
                             
                             <div class="form-group">
                                 <label>Length</label>
-                                <input name="length" class="form-control" placeholder="{{pkt.length}}" required>
+                                <input name="length" class="form-control" placeholder="{{pkt.IP_length}}" >
                             </div>
                             
                             <div class="form-group">
                                 <label>Time to live</label>
-                                <input name="ttl" class="form-control" placeholder="{{pkt.ttl}}" required>
+                                <input name="ttl" class="form-control" placeholder="{{pkt.IP_ttl}}" >
                             </div>
                             
                             <ol class="breadcrumb">
@@ -132,17 +135,17 @@
                             
                             <div class="form-group">
                                 <label>Source Port Address</label>
-                                <input name="sport" class="form-control" placeholder="{{pkt.sport}}" required>
+                                <input name="sport" class="form-control" placeholder="{{pkt.TCP_sport}}" >
                             </div>
                             
                             <div class="form-group">
                                 <label>Destination Port Address</label>
-                                <input name="dport" class="form-control" placeholder="{{pkt.dport}}" required>
+                                <input name="dport" class="form-control" placeholder="{{pkt.TCP_dport}}" >
                             </div>
                         	
                         	<div class="form-group">
                                 <label>Window</label>
-                                <input name="window" class="form-control" placeholder="{{pkt.window}}" required>
+                                <input name="window" class="form-control" placeholder="{{pkt.TCP_window}}" >
                             </div>
                         	
                             <button type="submit" class="btn btn-default">Finish</button>
