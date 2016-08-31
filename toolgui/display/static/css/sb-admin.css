@@ -17,6 +17,27 @@ body {
     }
 }
 
+/*div#loading {
+    width: 35px;
+    height: 35px;
+    display: none;
+    background: url(/static/loading.gif) no-repeat;
+    cursor: wait;
+    }
+*/
+
+/*div#loading {
+    top: 200 px;
+    margin: auto;
+    position: absolute;
+    z-index: 1000;
+    width: 160px;
+    height: 24px;
+    background: url(/static/loading.gif) no-repeat;
+    cursor: wait;
+    }
+*/
+
 #wrapper {
     padding-left: 0;
 }

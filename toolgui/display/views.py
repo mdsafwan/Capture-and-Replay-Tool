@@ -63,10 +63,10 @@ def sendpackets(request):
                 host1 = request.GET.get('src')
                 host2 = request.GET.get('dst')
 
-            print check_host
+            #print check_host
             if saved_pkt[IP].src == check_host:
-                #del saved_pkt[IP].chksum
-                #del saved_pkt[TCP].chksum
+                del saved_pkt[IP].chksum
+                del saved_pkt[TCP].chksum
                 #del saved_pkt.src
                 #del saved_pkt.dst
                 saved_pkt[IP].src = host1
@@ -217,6 +217,8 @@ def display_packets(request):
     if packet_tf.objects.exists():
         packet_tf.objects.all().delete()
         
+    newpkts = {}
+    
     packet_num = 0;
     for pkt in pkts:
         if pkt.haslayer(TCP):
@@ -224,6 +226,35 @@ def display_packets(request):
                 R_load = pkt.load,
             else:
                 R_load = ""
+            
+#             newpkts["packet_num"] = packet_num,
+#             newpkts["Ether_src_macaddr"] = pkt.src,
+#             newpkts["Ether_dst_macaddr"] = pkt.dst,
+#             newpkts["Ether_type"] = pkt.type,
+#             newpkts["IP_version"] = pkt[IP].version,
+#             newpkts["IP_ihl"] = pkt[IP].ihl,
+#             newpkts["IP_tos"] = pkt[IP].tos,
+#             newpkts["IP_length"] = pkt[IP].len,
+#             newpkts["IP_id"] = pkt[IP].id,
+#             newpkts["IP_flags"] = pkt[IP].flags,
+#             newpkts["IP_frag"] = pkt[IP].frag,
+#             newpkts["IP_ttl"] = pkt[IP].ttl,
+#             newpkts["IP_proto"] = pkt[IP].proto,
+#             newpkts["IP_chksum"] = pkt[IP].chksum,
+#             newpkts["IP_src_address"] = pkt[IP].src,
+#             newpkts["IP_dst_address"] = pkt[IP].dst,
+#             newpkts["TCP_sport"] = pkt[TCP].sport,
+#             newpkts["TCP_dport"] = pkt[TCP].dport,
+#             newpkts["TCP_seq"] = pkt[TCP].seq,
+#             newpkts["TCP_ack"] = pkt[TCP].ack,
+#             newpkts["TCP_dataofs"] =  pkt[TCP].dataofs,
+#             newpkts["TCP_reserved"] = pkt[TCP].reserved,
+#             newpkts["TCP_flags"] = pkt[TCP].flags,
+#             newpkts["TCP_window"] = pkt[TCP].window,
+#             newpkts["TCP_chksum"] = pkt[TCP].chksum,
+#             newpkts["TCP_urgptr"] = pkt[TCP].urgptr,
+# #                                 TCP_options = pkt[TCP].options,
+#             newpkts["Raw_load"] = R_load
             
             packet_tf.objects.create(packet_num = packet_num,
                                 Ether_src_macaddr = pkt.src,
@@ -277,6 +308,7 @@ def edit_packet(request):
         ttl = request.POST.get('ttl')
         sport = request.POST.get('sport')
         dport = request.POST.get('dport')
+        tcpflags = request.POST.get('tcpflags')
         tcp_window = request.POST.get('window')
     
 #         packet_tf.objects.filter(id=pkt_id).update(Ether_src_macaddr=src_macaddr,
@@ -311,6 +343,8 @@ def edit_packet(request):
             pkts_from_tf[pkt_num][TCP].sport = int(sport)
         if dport:
             pkts_from_tf[pkt_num][TCP].dport = int(dport)
+        if tcpflags:
+            pkts_from_tf[pkt_num][TCP].flags = int(tcpflags)
         if tcp_window:
             pkts_from_tf[pkt_num][TCP].window = int(tcp_window)
         
@@ -382,6 +416,7 @@ def save(request):
             Ether_new_pkt.type = saved_pkt['Ether_type']
             
             IP_new_pkt = IP()
+
             IP_new_pkt.src = saved_pkt['IP_src_address']
             IP_new_pkt.dst = saved_pkt['IP_dst_address']
 #             IP_new_pkt.version = saved_pkt['IP_version']
@@ -406,6 +441,30 @@ def save(request):
 #             TCP_new_pkt.chksum = saved_pkt['TCP_chksum']
 #             TCP_new_pkt.urgptr = saved_pkt['TCP_urgptr']
 
+            IP_new_pkt.src = saved_pkt['src_address']
+            IP_new_pkt.dst = saved_pkt['dst_address']
+            IP_new_pkt.version = int(saved_pkt['version'])
+            IP_new_pkt.ihl = int(saved_pkt['ihl'])
+            IP_new_pkt.tos = saved_pkt['tos']
+            IP_new_pkt.id = saved_pkt['id_IP']
+            IP_new_pkt.flags = int(saved_pkt['flags'], 16)
+            #IP_new_pkt.frag = saved_pkt['frag']
+            IP_new_pkt.ttl = saved_pkt['ttl']
+            IP_new_pkt.proto = saved_pkt['proto']
+            IP_new_pkt.chksum = saved_pkt['chksum']
+             
+            TCP_new_pkt = TCP()
+            TCP_new_pkt.sport = saved_pkt['sport']
+            TCP_new_pkt.dport = saved_pkt['dport']
+            #TCP_new_pkt.seq = saved_pkt['seq']
+            #TCP_new_pkt.ack = saved_pkt['ack']
+            #TCP_new_pkt.dataofs = saved_pkt['dataofs']
+            #TCP_new_pkt.reserved = saved_pkt['reserved']
+            #TCP_new_pkt.flags = saved_pkt['flags_TCP']
+            #TCP_new_pkt.window = saved_pkt['window']
+            #TCP_new_pkt.chksum = saved_pkt['chksum_TCP']
+            #TCP_new_pkt.urgptr = saved_pkt['urgptr']
+
             Raw_new_pkt = Raw()
             Raw_new_pkt = saved_pkt['Raw_load']
             complete_pkt = (Ether_new_pkt/IP_new_pkt/TCP_new_pkt/Raw_new_pkt)
@@ -415,5 +474,4 @@ def save(request):
             pkts.append(complete_pkt)
         wrpcap(SAVE_PATH, pkts)
     return render(request, "save_pcap.html", {})
-
 

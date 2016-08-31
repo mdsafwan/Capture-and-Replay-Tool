@@ -34,7 +34,7 @@ class packet_tf(models.Model):
     TCP_chksum = models.IntegerField(null=True, blank=True)
     TCP_urgptr = models.IntegerField(null=True, blank=True)
     
-    Raw_load = models.CharField(max_length=512, blank=True, null=True)
+    Raw_load = models.CharField(max_length=8192, blank=True, null=True)
     class Meta:
         db_table = "packet"
         ordering = ['pk']
